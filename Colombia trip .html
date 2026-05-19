@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Colombia 🌸</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, 'Times New Roman', serif; background: #fff7f9; color: #1f1f1f; min-height: 100vh; }
+
+  .hero { background: linear-gradient(160deg, #fce7f3 0%, #fbcfe8 50%, #fda4af 100%); padding: 48px 24px 36px; }
+  .hero-inner { max-width: 520px; margin: 0 auto; }
+  .pill { display: inline-block; background: rgba(255,255,255,0.55); border: 1px solid #f9a8d4; color: #be185d; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .hero h1 { font-size: 42px; font-weight: 700; color: #831843; letter-spacing: -1px; line-height: 1.05; margin-bottom: 10px; }
+  .hero-meta { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #9d174d; font-style: italic; }
+  .hero-meta .dot { color: #f9a8d4; }
+
+  .sync-bar { background: #fff; border-bottom: 1px solid #fce7f3; padding: 6px 16px; text-align: center; font-size: 11px; color: #9ca3af; font-style: italic; }
+  .sync-bar.ok { color: #6ee7b7; }
+  .sync-bar.err { color: #fca5a5; }
+
+  .tab-bar { display: flex; border-bottom: 1px solid #fce7f3; background: #fff; position: sticky; top: 0; z-index: 10; }
+  .tab-btn { flex: 1; padding: 14px 4px; border: none; background: transparent; font-size: 12px; font-family: inherit; font-weight: 600; color: #d1d5db; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+  .tab-btn.active { color: #ec4899; border-bottom: 2px solid #ec4899; }
+
+  .body { max-width: 520px; margin: 0 auto; padding: 24px 16px 80px; }
+  .section-title { font-size: 10px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: #f472b6; margin-bottom: 14px; margin-top: 4px; }
+
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .toggle-label { font-size: 12px; color: #9ca3af; font-style: italic; }
+  .toggle-pill { display: flex; background: #fce7f3; border-radius: 20px; padding: 3px; gap: 2px; }
+  .toggle-opt { border: none; background: transparent; border-radius: 16px; padding: 5px 14px; font-size: 12px; font-weight: 600; cursor: pointer; color: #f9a8d4; font-family: inherit; transition: all 0.18s; }
+  .toggle-opt.active { background: #ec4899; color: #fff; }
+
+  .total-banner { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #fce7f3, #fda4af); border-radius: 16px; padding: 20px 22px; margin-bottom: 24px; }
+  .total-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #be185d; margin-bottom: 4px; }
+  .total-primary { font-size: 28px; font-weight: 700; color: #831843; letter-spacing: -1px; }
+  .total-secondary { font-size: 12px; color: #f472b6; margin-top: 2px; }
+
+  .exp-card { background: #fff; border: 1px solid #fce7f3; border-radius: 14px; margin-bottom: 10px; overflow: hidden; }
+  .exp-header { display: flex; align-items: center; gap: 10px; padding: 13px 16px; cursor: pointer; user-select: none; }
+  .exp-icon { font-size: 18px; }
+  .exp-label { font-size: 14px; font-weight: 600; color: #374151; flex: 1; }
+  .exp-total { font-size: 13px; font-weight: 700; color: #ec4899; }
+  .exp-chevron { color: #f9a8d4; font-size: 13px; }
+  .exp-body { padding: 0 16px 14px; display: none; }
+  .exp-body.open { display: block; }
+  .exp-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; gap: 8px; }
+  .exp-item-name { font-size: 13px; color: #374151; flex: 1; }
+  .exp-item-primary { font-size: 13px; font-weight: 700; color: #be185d; text-align: right; }
+  .exp-item-secondary { font-size: 10px; color: #d1d5db; text-align: right; }
+  .divider { height: 1px; background: #fce7f3; margin: 4px 0; }
+  .subtotal-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0 0; }
+  .subtotal-label { color: #9ca3af; font-size: 11px; }
+
+  .mini-form { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; padding: 12px; background: #fff7f9; border-radius: 10px; border: 1px solid #fce7f3; }
+  .mini-input { width: 100%; padding: 8px 10px; border: 1px solid #fce7f3; border-radius: 8px; font-size: 13px; font-family: inherit; color: #374151; background: #fff; outline: none; }
+  textarea.mini-input { resize: vertical; min-height: 60px; }
+  .btn-row { display: flex; gap: 6px; }
+  .btn-pink { background: #ec4899; color: #fff; border: none; border-radius: 8px; padding: 7px 14px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .btn-ghost { background: none; border: 1px solid #fce7f3; border-radius: 8px; padding: 7px 14px; font-size: 12px; color: #9ca3af; cursor: pointer; font-family: inherit; }
+  .add-row-btn { background: none; border: none; color: #f9a8d4; font-size: 12px; font-weight: 700; cursor: pointer; padding: 4px 0; text-align: left; font-family: inherit; }
+  .comment-btn { background: none; border: 1px dashed #fce7f3; border-radius: 8px; color: #d1d5db; font-size: 11px; cursor: pointer; padding: 5px 10px; width: 100%; text-align: left; font-family: inherit; margin-top: 8px; }
+  .remove-btn { background: none; border: none; color: #fca5a5; font-size: 18px; cursor: pointer; padding: 0 2px; line-height: 1; flex-shrink: 0; }
+
+  .city-block { border: 1.5px solid; border-radius: 16px; margin-bottom: 20px; overflow: hidden; background: #fff; }
+  .city-block.bogota { border-color: #fbcfe8; }
+  .city-block.cartagena { border-color: #fda4af; }
+  .city-header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; }
+  .city-header.bogota { background: #fbcfe8; }
+  .city-header.cartagena { background: #fda4af; }
+  .city-name { font-weight: 800; font-size: 15px; letter-spacing: -0.3px; }
+  .city-name.bogota { color: #ec4899; }
+  .city-name.cartagena { color: #e11d48; }
+  .city-dates { font-size: 11px; color: #9ca3af; }
+  .concert-tag { margin-left: auto; background: #fce7f3; color: #831843; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 2px 8px; border-radius: 20px; }
+  .day-section { padding: 12px 16px; border-top: 1px solid #fce7f3; }
+  .day-label { font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .day-label.bogota { color: #ec4899; }
+  .day-label.cartagena { color: #e11d48; }
+  .event-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; padding: 8px 10px; background: #fff7f9; border-radius: 10px; }
+  .event-time { font-size: 11px; font-weight: 700; color: #f472b6; min-width: 40px; margin-top: 1px; }
+  .event-title { font-size: 13px; font-weight: 600; color: #374151; }
+  .event-note { font-size: 11px; color: #9ca3af; margin-top: 2px; font-style: italic; }
+
+  /* BUDGET */
+  .budget-section { background: #fff; border: 1px solid #fce7f3; border-radius: 16px; padding: 18px 16px; margin-bottom: 14px; }
+  .budget-section-title { font-size: 10px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: #f472b6; margin-bottom: 14px; }
+  .budget-input-row { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+  .budget-input-label { font-size: 12px; color: #9ca3af; min-width: 90px; }
+  .budget-input { flex: 1; padding: 7px 10px; border: 1px solid #fce7f3; border-radius: 8px; font-size: 13px; font-family: inherit; color: #374151; background: #fff; outline: none; }
+  .budget-input:focus { border-color: #f9a8d4; }
+  .progress-wrap { margin: 10px 0 4px; }
+  .progress-track { height: 8px; background: #fce7f3; border-radius: 99px; overflow: hidden; margin-bottom: 4px; }
+  .progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #f9a8d4, #ec4899); transition: width 0.4s ease; }
+  .progress-fill.over { background: linear-gradient(90deg, #fca5a5, #ef4444); }
+  .progress-labels { display: flex; justify-content: space-between; font-size: 10px; color: #9ca3af; }
+  .over-budget-alert { background: #fef2f2; border: 1px solid #fca5a5; border-radius: 10px; padding: 8px 12px; font-size: 12px; color: #ef4444; font-weight: 600; margin-top: 8px; text-align: center; }
+  .cat-budget-row { display: flex; align-items: center; gap: 8px; padding: 9px 0; border-bottom: 1px solid #fce7f3; }
+  .cat-budget-row:last-child { border-bottom: none; }
+  .cat-budget-icon { font-size: 16px; width: 22px; text-align: center; flex-shrink: 0; }
+  .cat-budget-label { font-size: 12px; color: #374151; flex: 1; }
+  .cat-budget-input { width: 85px; padding: 5px 8px; border: 1px solid #fce7f3; border-radius: 8px; font-size: 12px; font-family: inherit; color: #374151; background: #fff; outline: none; text-align: right; }
+  .cat-budget-input:focus { border-color: #f9a8d4; }
+  .cat-spent { font-size: 11px; width: 65px; text-align: right; flex-shrink: 0; color: #9ca3af; }
+  .cat-over { color: #ef4444 !important; font-weight: 700; }
+  .cat-mini-bar { width: 36px; height: 4px; background: #fce7f3; border-radius: 99px; overflow: hidden; flex-shrink: 0; }
+  .cat-mini-fill { height: 100%; border-radius: 99px; background: #ec4899; }
+  .cat-mini-fill.over { background: #ef4444; }
+
+  /* SAVINGS */
+  .savings-card { border-radius: 14px; padding: 16px; margin-bottom: 10px; border: 1px solid #fce7f3; background: #fff; }
+  .savings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .savings-name { font-size: 14px; font-weight: 700; color: #374151; }
+  .savings-edit-btn { background: none; border: none; font-size: 12px; color: #f9a8d4; cursor: pointer; font-family: inherit; }
+  .savings-amounts { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+  .savings-saved { font-size: 22px; font-weight: 700; color: #ec4899; letter-spacing: -0.5px; }
+  .savings-goal { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+  .savings-remaining { font-size: 11px; color: #9ca3af; text-align: right; }
+  .savings-remaining.done { color: #6ee7b7 !important; font-weight: 700; }
+  .add-savings-btn { width: 100%; padding: 12px; background: rgba(255,255,255,0.7); border: 2px dashed #fce7f3; border-radius: 14px; color: #f472b6; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; margin-top: 4px; }
+
+  .loading { text-align: center; padding: 40px; color: #f9a8d4; font-style: italic; font-size: 14px; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="pill">21 – 28 noviembre 2026</div>
+    <h1>Colombia</h1>
+    <div class="hero-meta">
+      <span>Bogotá · Cartagena</span>
+      <span class="dot">·</span>
+      <span>🎤 Hayley Williams</span>
+    </div>
+  </div>
+</div>
+
+<div class="sync-bar" id="syncBar">Conectando...</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab(0)">Gastos</button>
+  <button class="tab-btn" onclick="switchTab(1)">Itinerario</button>
+  <button class="tab-btn" onclick="switchTab(2)">Presupuesto</button>
+</div>
+
+<div class="body">
+
+  <!-- GASTOS -->
+  <div id="tab-gastos">
+    <div class="loading" id="gastos-loading">Cargando gastos... 🌸</div>
+    <div id="gastos-content" class="hidden">
+      <div class="toggle-row">
+        <span class="toggle-label">Ingresar en</span>
+        <div class="toggle-pill">
+          <button class="toggle-opt active" id="btn-usd" onclick="setCurrency('usd')">USD $</button>
+          <button class="toggle-opt" id="btn-cop" onclick="setCurrency('cop')">COP</button>
+        </div>
+      </div>
+      <div id="total-banner" class="hidden total-banner">
+        <div>
+          <div class="total-label">Total registrado</div>
+          <div class="total-primary" id="total-primary"></div>
+          <div class="total-secondary" id="total-secondary"></div>
+        </div>
+        <span style="font-size:32px">✈️</span>
+      </div>
+      <div class="section-title">Categorías</div>
+      <div id="exp-cards"></div>
+    </div>
+  </div>
+
+  <!-- ITINERARIO -->
+  <div id="tab-itinerario" class="hidden">
+    <div class="loading" id="itin-loading">Cargando itinerario... 🌸</div>
+    <div id="itin-content" class="hidden">
+      <div class="section-title">Tu viaje día a día</div>
+      <div id="bogota-block"></div>
+      <div id="cartagena-block"></div>
+    </div>
+  </div>
+
+  <!-- PRESUPUESTO -->
+  <div id="tab-presupuesto" class="hidden">
+    <div class="loading" id="budget-loading">Cargando presupuesto... 🌸</div>
+    <div id="budget-content" class="hidden">
+
+      <div class="budget-section">
+        <div class="budget-section-title">Presupuesto total del viaje</div>
+        <div class="budget-input-row">
+          <span class="budget-input-label">Límite total</span>
+          <input class="budget-input" type="number" id="total-budget-input" placeholder="ej. 2000" oninput="onTotalBudgetChange()" />
+        </div>
+        <div id="total-progress-wrap" class="hidden progress-wrap">
+          <div class="progress-track"><div class="progress-fill" id="total-fill"></div></div>
+          <div class="progress-labels">
+            <span id="total-spent-label"></span>
+            <span id="total-pct-label"></span>
+          </div>
+          <div id="total-alert" class="over-budget-alert hidden">⚠️ ¡Os habéis pasado del presupuesto total!</div>
+        </div>
+      </div>
+
+      <div class="budget-section">
+        <div class="budget-section-title">Presupuesto por categoría</div>
+        <div id="cat-budget-list"></div>
+      </div>
+
+      <div class="budget-section">
+        <div class="budget-section-title">Ahorro</div>
+        <div id="savings-list"></div>
+        <button class="add-savings-btn" onclick="addSavingsPerson()">+ añadir persona</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBTuCMIWSgdb7Y0lFejDosM5zu6M2V_zR4",
+  authDomain: "colombia-trip-8d006.firebaseapp.com",
+  projectId: "colombia-trip-8d006",
+  storageBucket: "colombia-trip-8d006.firebasestorage.app",
+  messagingSenderId: "276940740619",
+  appId: "1:276940740619:web:fc0513e7f1bc54b74bcf0e"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+// ── CONSTANTS ──
+const USD_TO_COP = 4150;
+const CATS = [
+  { id: "concierto", label: "Boleto concierto", icon: "🎤" },
+  { id: "airbnb",    label: "Airbnb",           icon: "🏠" },
+  { id: "vuelos",    label: "Vuelos",            icon: "✈️" },
+  { id: "tours",     label: "Tours",             icon: "🗺️" },
+  { id: "comida",    label: "Comida & bebida",   icon: "🍽️" },
+  { id: "ropa",      label: "Ropa & zapatos",    icon: "👟" },
+  { id: "souvenirs", label: "Souvenirs",         icon: "🛍️" },
+  { id: "uber",      label: "Uber",              icon: "🚗" },
+  { id: "otros",     label: "Otros",             icon: "📦" },
+];
+const BOGOTA_DAYS    = ["21 nov","22 nov","23 nov","24 nov"];
+const CARTAGENA_DAYS = ["24 nov","25 nov","26 nov","27 nov","28 nov"];
+
+// ── STATE ──
+let usdMode  = true;
+let expenses = {};
+let itinerary = { bogota: {}, cartagena: {} };
+let budgetData = { totalBudget: "", catBudgets: {}, savings: [] };
+let openCards = {}, openForms = {}, openItinForms = {}, openSavingsForms = {};
+
+CATS.forEach(c => {
+  expenses[c.id] = { items: [], comment: "" };
+  budgetData.catBudgets[c.id] = "";
+});
+BOGOTA_DAYS.forEach(d => itinerary.bogota[d] = []);
+CARTAGENA_DAYS.forEach(d => itinerary.cartagena[d] = []);
+
+// ── FIRESTORE REFS ──
+const expRef    = doc(db, "trip", "expenses");
+const itinRef   = doc(db, "trip", "itinerary");
+const budgetRef = doc(db, "trip", "budget");
+
+// ── SYNC BAR ──
+function setSyncBar(msg, cls="") {
+  const bar = document.getElementById("syncBar");
+  bar.textContent = msg; bar.className = "sync-bar " + cls;
+}
+
+// ── SAVE FUNCTIONS ──
+async function saveExpenses() {
+  try { await setDoc(expRef, expenses); setSyncBar("✓ Guardado","ok"); setTimeout(()=>setSyncBar("Sincronizado 🌸"),2000); }
+  catch(e) { setSyncBar("Error al guardar","err"); }
+}
+async function saveItinerary() {
+  try { await setDoc(itinRef, itinerary); setSyncBar("✓ Guardado","ok"); setTimeout(()=>setSyncBar("Sincronizado 🌸"),2000); }
+  catch(e) { setSyncBar("Error al guardar","err"); }
+}
+async function saveBudget() {
+  try { await setDoc(budgetRef, budgetData); setSyncBar("✓ Guardado","ok"); setTimeout(()=>setSyncBar("Sincronizado 🌸"),2000); }
+  catch(e) { setSyncBar("Error al guardar","err"); }
+}
+
+// ── LISTENERS ──
+onSnapshot(expRef, snap => {
+  if (snap.exists()) { const d=snap.data(); CATS.forEach(c=>{ if(d[c.id]) expenses[c.id]=d[c.id]; }); }
+  document.getElementById("gastos-loading").classList.add("hidden");
+  document.getElementById("gastos-content").classList.remove("hidden");
+  renderExpenses(); setSyncBar("Sincronizado 🌸");
+});
+
+onSnapshot(itinRef, snap => {
+  if (snap.exists()) { const d=snap.data(); if(d.bogota) itinerary.bogota=d.bogota; if(d.cartagena) itinerary.cartagena=d.cartagena; }
+  document.getElementById("itin-loading").classList.add("hidden");
+  document.getElementById("itin-content").classList.remove("hidden");
+  renderItinerary();
+});
+
+onSnapshot(budgetRef, snap => {
+  if (snap.exists()) {
+    const d=snap.data();
+    if(d.totalBudget!==undefined) budgetData.totalBudget=d.totalBudget;
+    if(d.catBudgets) budgetData.catBudgets={...budgetData.catBudgets,...d.catBudgets};
+    if(d.savings) budgetData.savings=d.savings;
+  }
+  document.getElementById("budget-loading").classList.add("hidden");
+  document.getElementById("budget-content").classList.remove("hidden");
+  renderBudget();
+});
+
+// ── CURRENCY ──
+window.setCurrency = function(mode) {
+  usdMode = mode==='usd';
+  document.getElementById('btn-usd').className='toggle-opt'+(usdMode?' active':'');
+  document.getElementById('btn-cop').className='toggle-opt'+(!usdMode?' active':'');
+  renderExpenses(); renderBudget();
+};
+
+function fmtP(val) {
+  const n=parseFloat(val)||0;
+  return usdMode ? `$${n.toFixed(2)}` : `${n.toLocaleString("es-CO")} COP`;
+}
+function fmtS(val) {
+  const n=parseFloat(val)||0;
+  return usdMode ? `${(n*USD_TO_COP).toLocaleString("es-CO")} COP` : `$${(n/USD_TO_COP).toFixed(2)} USD`;
+}
+function totalItems(items) { return items.reduce((s,i)=>s+(parseFloat(i.primary)||0),0); }
+function grandTotal() { return CATS.reduce((s,c)=>s+totalItems(expenses[c.id].items),0); }
+
+// ── RENDER EXPENSES ──
+function renderExpenses() {
+  const gt = grandTotal();
+  const banner = document.getElementById("total-banner");
+  if (gt>0) {
+    banner.classList.remove("hidden");
+    document.getElementById("total-primary").textContent = fmtP(gt);
+    document.getElementById("total-secondary").textContent = fmtS(gt);
+  } else { banner.classList.add("hidden"); }
+  const container = document.getElementById("exp-cards");
+  container.innerHTML = "";
+  CATS.forEach(cat => container.appendChild(buildExpCard(cat)));
+  // refresh budget if open
+  if (!document.getElementById("tab-presupuesto").classList.contains("hidden")) renderBudget();
+}
+
+function buildExpCard(cat) {
+  const data=expenses[cat.id], total=totalItems(data.items);
+  const isOpen=openCards[cat.id], form=openForms[cat.id];
+  const card=document.createElement("div"); card.className="exp-card";
+
+  const header=document.createElement("div"); header.className="exp-header";
+  header.innerHTML=`<span class="exp-icon">${cat.icon}</span><span class="exp-label">${cat.label}</span>${total>0?`<span class="exp-total">${fmtP(total)}</span>`:''}<span class="exp-chevron">${isOpen?'▲':'▼'}</span>`;
+  header.onclick=()=>{ openCards[cat.id]=!openCards[cat.id]; renderExpenses(); };
+  card.appendChild(header);
+  if (!isOpen) return card;
+
+  const body=document.createElement("div"); body.className="exp-body open";
+
+  if (data.items.length>0) {
+    data.items.forEach(item=>{
+      const row=document.createElement("div"); row.className="exp-item";
+      row.innerHTML=`<span class="exp-item-name">${item.name}</span>${item.primary?`<div style="text-align:right"><div class="exp-item-primary">${fmtP(item.primary)}</div><div class="exp-item-secondary">${fmtS(item.primary)}</div></div>`:''}<button class="remove-btn" data-id="${item.id}" data-cat="${cat.id}">×</button>`;
+      row.querySelector(".remove-btn").onclick=e=>{ expenses[cat.id].items=expenses[cat.id].items.filter(i=>i.id!=e.target.dataset.id); saveExpenses(); renderExpenses(); };
+      body.appendChild(row);
+    });
+    const div=document.createElement("div"); div.className="divider"; body.appendChild(div);
+    if (total>0) {
+      const sub=document.createElement("div"); sub.className="subtotal-row";
+      sub.innerHTML=`<span class="subtotal-label">Subtotal</span><div style="text-align:right"><div style="font-weight:700;font-size:13px;color:#be185d">${fmtP(total)}</div><div style="font-size:10px;color:#d1d5db">${fmtS(total)}</div></div>`;
+      body.appendChild(sub);
+    }
+  }
+
+  if (form==='add') {
+    const mf=document.createElement("div"); mf.className="mini-form";
+    mf.innerHTML=`<input class="mini-input" id="nn-${cat.id}" placeholder="Nombre (ej. Vuelo BOG-CTG)"/><input class="mini-input" id="na-${cat.id}" type="number" placeholder="${usdMode?'$ importe':'COP importe'}" style="width:140px"/><div class="btn-row"><button class="btn-pink" id="ai-${cat.id}">Añadir</button><button class="btn-ghost" id="ca-${cat.id}">Cancelar</button></div>`;
+    body.appendChild(mf);
+    setTimeout(()=>{
+      document.getElementById(`ai-${cat.id}`).onclick=()=>{ const n=document.getElementById(`nn-${cat.id}`).value.trim(),a=document.getElementById(`na-${cat.id}`).value; if(!n)return; expenses[cat.id].items.push({id:Date.now(),name:n,primary:a}); openForms[cat.id]=null; saveExpenses(); renderExpenses(); };
+      document.getElementById(`ca-${cat.id}`).onclick=()=>{ openForms[cat.id]=null; renderExpenses(); };
+    },0);
+  } else {
+    const btn=document.createElement("button"); btn.className="add-row-btn"; btn.textContent="+ añadir elemento";
+    btn.onclick=()=>{ openForms[cat.id]='add'; renderExpenses(); }; body.appendChild(btn);
+  }
+
+  if (form==='comment') {
+    const mf=document.createElement("div"); mf.className="mini-form";
+    mf.innerHTML=`<textarea class="mini-input" id="cm-${cat.id}" placeholder="Notas, confirmaciones, links...">${data.comment||''}</textarea><div class="btn-row"><button class="btn-pink" id="sc-${cat.id}">Guardar</button><button class="btn-ghost" id="cc-${cat.id}">Cancelar</button></div>`;
+    body.appendChild(mf);
+    setTimeout(()=>{
+      document.getElementById(`sc-${cat.id}`).onclick=()=>{ expenses[cat.id].comment=document.getElementById(`cm-${cat.id}`).value; openForms[cat.id]=null; saveExpenses(); renderExpenses(); };
+      document.getElementById(`cc-${cat.id}`).onclick=()=>{ openForms[cat.id]=null; renderExpenses(); };
+    },0);
+  } else {
+    const cb=document.createElement("button"); cb.className="comment-btn";
+    cb.textContent=data.comment?`📝 ${data.comment.slice(0,40)}${data.comment.length>40?'…':''}`:'＋ comentario';
+    cb.onclick=()=>{ openForms[cat.id]='comment'; renderExpenses(); }; body.appendChild(cb);
+  }
+
+  card.appendChild(body); return card;
+}
+
+// ── RENDER ITINERARY ──
+function renderItinerary() {
+  renderCityBlock("bogota",    BOGOTA_DAYS,    "Bogotá",    "🏙️","21 – 24 nov",true);
+  renderCityBlock("cartagena", CARTAGENA_DAYS, "Cartagena", "🏖️","24 – 28 nov",false);
+}
+
+function renderCityBlock(city, days, name, emoji, dates, hasConcert) {
+  const container=document.getElementById(`${city}-block`); container.innerHTML="";
+  const block=document.createElement("div"); block.className=`city-block ${city}`;
+  const ch=document.createElement("div"); ch.className=`city-header ${city}`;
+  ch.innerHTML=`<span style="font-size:22px">${emoji}</span><div><div class="city-name ${city}">${name}</div><div class="city-dates">${dates}</div></div>${hasConcert?'<span class="concert-tag" style="margin-left:auto">🎤 Concierto 23 nov</span>':''}`;
+  block.appendChild(ch);
+
+  days.forEach(day=>{
+    const events=itinerary[city][day]||[];
+    const ds=document.createElement("div"); ds.className="day-section";
+    const dl=document.createElement("div"); dl.className=`day-label ${city}`; dl.textContent=day; ds.appendChild(dl);
+
+    events.forEach(ev=>{
+      const row=document.createElement("div"); row.className="event-row";
+      row.innerHTML=`${ev.time?`<span class="event-time">${ev.time}`:''}</span><div style="flex:1"><div class="event-title">${ev.title}</div>${ev.note?`<div class="event-note">${ev.note}</div>`:''}</div><button class="remove-btn" data-city="${city}" data-day="${day}" data-id="${ev.id}">×</button>`;
+      row.querySelector(".remove-btn").onclick=e=>{ const{city:c,day:d,id}=e.target.dataset; itinerary[c][d]=itinerary[c][d].filter(ev=>ev.id!=id); saveItinerary(); renderItinerary(); };
+      ds.appendChild(row);
+    });
+
+    const fk=`${city}-${day}`;
+    if (openItinForms[fk]) {
+      const mf=document.createElement("div"); mf.className="mini-form";
+      mf.innerHTML=`<input class="mini-input" id="et-${fk}" placeholder="¿Qué haréis?"/><input class="mini-input" id="eh-${fk}" placeholder="Hora (ej. 15:00)" style="width:140px"/><input class="mini-input" id="en-${fk}" placeholder="Nota opcional"/><div class="btn-row"><button class="btn-pink" id="ea-${fk}">Añadir</button><button class="btn-ghost" id="ec-${fk}">Cancelar</button></div>`;
+      ds.appendChild(mf);
+      setTimeout(()=>{
+        document.getElementById(`ea-${fk}`).onclick=()=>{ const t=document.getElementById(`et-${fk}`).value.trim(); if(!t)return; const h=document.getElementById(`eh-${fk}`).value,n=document.getElementById(`en-${fk}`).value; if(!itinerary[city][day]) itinerary[city][day]=[]; itinerary[city][day].push({id:Date.now(),title:t,time:h,note:n}); openItinForms[fk]=false; saveItinerary(); renderItinerary(); };
+        document.getElementById(`ec-${fk}`).onclick=()=>{ openItinForms[fk]=false; renderItinerary(); };
+      },0);
+    } else {
+      const ab=document.createElement("button"); ab.className="add-row-btn"; ab.textContent="+ añadir plan";
+      ab.onclick=()=>{ openItinForms[fk]=true; renderItinerary(); }; ds.appendChild(ab);
+    }
+    block.appendChild(ds);
+  });
+  container.appendChild(block);
+}
+
+// ── RENDER BUDGET ──
+function renderBudget() {
+  // Total progress
+  const tb = parseFloat(budgetData.totalBudget)||0;
+  const gt = grandTotal();
+  const totalInput = document.getElementById("total-budget-input");
+  if (totalInput && document.activeElement !== totalInput) totalInput.value = budgetData.totalBudget||"";
+
+  const wrap = document.getElementById("total-progress-wrap");
+  if (tb>0) {
+    wrap.classList.remove("hidden");
+    const pct = Math.min((gt/tb)*100,100);
+    const over = gt>tb;
+    const fill = document.getElementById("total-fill");
+    fill.style.width = pct+"%";
+    fill.className = "progress-fill"+(over?" over":"");
+    document.getElementById("total-spent-label").textContent = `${fmtP(gt)} gastado`;
+    document.getElementById("total-pct-label").textContent = `${Math.round((gt/tb)*100)}% de ${fmtP(tb)}`;
+    document.getElementById("total-alert").classList.toggle("hidden",!over);
+  } else { wrap.classList.add("hidden"); }
+
+  // Cat budgets
+  const catList = document.getElementById("cat-budget-list");
+  catList.innerHTML="";
+  CATS.forEach(cat=>{
+    const spent=totalItems(expenses[cat.id].items);
+    const budget=parseFloat(budgetData.catBudgets[cat.id])||0;
+    const over=budget>0&&spent>budget;
+    const pct=budget>0?Math.min((spent/budget)*100,100):spent>0?100:0;
+    const row=document.createElement("div"); row.className="cat-budget-row";
+    row.innerHTML=`
+      <span class="cat-budget-icon">${cat.icon}</span>
+      <span class="cat-budget-label">${cat.label}</span>
+      <div class="cat-mini-bar"><div class="cat-mini-fill${over?' over':''}" style="width:${pct}%"></div></div>
+      <span class="cat-spent${over?' cat-over':''}">${spent>0?fmtP(spent):'—'}</span>
+      <input class="cat-budget-input" type="number" placeholder="límite" value="${budgetData.catBudgets[cat.id]||''}" data-cat="${cat.id}" />
+    `;
+    const inp=row.querySelector("input");
+    inp.oninput=e=>{ budgetData.catBudgets[cat.id]=e.target.value; saveBudget(); renderBudget(); };
+    catList.appendChild(row);
+  });
+
+  // Savings
+  renderSavings();
+}
+
+function renderSavings() {
+  const list=document.getElementById("savings-list"); list.innerHTML="";
+  (budgetData.savings||[]).forEach(person=>{
+    const saved=parseFloat(person.saved)||0;
+    const goal=parseFloat(person.goal)||0;
+    const pct=goal>0?Math.min((saved/goal)*100,100):saved>0?100:0;
+    const remaining=goal>0?goal-saved:0;
+    const done=goal>0&&saved>=goal;
+    const card=document.createElement("div"); card.className="savings-card";
+
+    if (openSavingsForms[person.id]) {
+      card.innerHTML=`
+        <div class="budget-section-title" style="margin-bottom:10px">Editar ahorro</div>
+        <div class="budget-input-row"><span class="budget-input-label">Nombre</span><input class="budget-input" id="sn-${person.id}" value="${person.name}" placeholder="ej. Yo / Mi pareja"/></div>
+        <div class="budget-input-row"><span class="budget-input-label">Ahorrado</span><input class="budget-input" id="ss-${person.id}" type="number" value="${person.saved||''}" placeholder="ej. 500"/></div>
+        <div class="budget-input-row"><span class="budget-input-label">Meta</span><input class="budget-input" id="sg-${person.id}" type="number" value="${person.goal||''}" placeholder="ej. 1000"/></div>
+        <div class="btn-row" style="margin-top:6px">
+          <button class="btn-pink" id="save-s-${person.id}">Guardar</button>
+          <button class="btn-ghost" id="del-s-${person.id}">Eliminar</button>
+        </div>`;
+      list.appendChild(card);
+      setTimeout(()=>{
+        document.getElementById(`save-s-${person.id}`).onclick=()=>{
+          person.name=document.getElementById(`sn-${person.id}`).value||person.name;
+          person.saved=document.getElementById(`ss-${person.id}`).value;
+          person.goal=document.getElementById(`sg-${person.id}`).value;
+          openSavingsForms[person.id]=false; saveBudget(); renderSavings();
+        };
+        document.getElementById(`del-s-${person.id}`).onclick=()=>{
+          budgetData.savings=budgetData.savings.filter(p=>p.id!==person.id);
+          openSavingsForms[person.id]=false; saveBudget(); renderSavings();
+        };
+      },0);
+    } else {
+      card.innerHTML=`
+        <div class="savings-header">
+          <span class="savings-name">${person.name}</span>
+          <button class="savings-edit-btn" data-id="${person.id}">editar</button>
+        </div>
+        <div class="savings-amounts">
+          <div><div class="savings-saved">${fmtP(saved)}</div><div class="savings-goal">${goal>0?`meta: ${fmtP(goal)}`:'sin meta'}</div></div>
+          <div class="savings-remaining${done?' done':''}">${done?'🎉 ¡Meta alcanzada!':goal>0?`faltan ${fmtP(remaining)}`:''}</div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+          <div class="progress-labels"><span>${Math.round(pct)}% ahorrado</span><span>${fmtS(saved)}</span></div>
+        </div>`;
+      list.appendChild(card);
+      card.querySelector(".savings-edit-btn").onclick=e=>{ openSavingsForms[e.target.dataset.id]=true; renderSavings(); };
+    }
+  });
+}
+
+window.addSavingsPerson = function() {
+  budgetData.savings.push({id:Date.now().toString(),name:"Nueva persona",saved:"",goal:""});
+  openSavingsForms[budgetData.savings[budgetData.savings.length-1].id]=true;
+  saveBudget(); renderSavings();
+};
+
+window.onTotalBudgetChange = function() {
+  budgetData.totalBudget = document.getElementById("total-budget-input").value;
+  saveBudget(); renderBudget();
+};
+
+// ── TAB SWITCH ──
+window.switchTab = function(i) {
+  document.getElementById("tab-gastos").classList.toggle("hidden",i!==0);
+  document.getElementById("tab-itinerario").classList.toggle("hidden",i!==1);
+  document.getElementById("tab-presupuesto").classList.toggle("hidden",i!==2);
+  document.querySelectorAll(".tab-btn").forEach((b,j)=>b.classList.toggle("active",i===j));
+  if(i===2) renderBudget();
+};
+
+</script>
+</body>
+</html>
